@@ -1,0 +1,19 @@
+# source documents shall not be put into docker image
+#/source_documents
+
+# no intellij files
+/.idea
+*.bin
+/db
+/genaidata
+/PDF_DB
+/.chroma
+/embeddings
+/*.MD
+/.DS_Store
+/.git
+/.gitignore
+
+
+#no cache
+__pycache__

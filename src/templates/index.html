@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<style>
+    /* Chat containers */
+.container {
+  border: 2px solid #dedede;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+/* Darker chat container */
+.darker {
+  border-color: #ccc;
+  background-color: #ddd;
+}
+
+/* Clear floats */
+.container::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+/* Style images */
+.container img {
+  float: left;
+  max-width: 60px;
+  width: 100%;
+  margin-right: 20px;
+  border-radius: 50%;
+}
+
+/* Style the right image */
+.container img.right {
+  float: right;
+  margin-left: 20px;
+  margin-right:0;
+}
+</style>
+    <title>{{title}}</title>
+
+
+    <script>
+
+
+
+    function createLink(url){
+                var a = document.createElement('a');
+                var link = document.createTextNode(url);
+                a.appendChild(link);
+                a.title = url;
+                a.href = url;
+                return a;
+        }
+
+    function createSourceList(sources) {
+        let sourceDiv = document.getElementById("sources");
+        sourceDiv.replaceChildren();
+        let text = "Please refer below documents for a comprehensive answer: "
+        let paragraph = document.createElement("p")
+        paragraph.appendChild(document.createTextNode(text));
+        sourceDiv.appendChild(paragraph);
+        let orderedList = document.createElement("ol")
+        for (i = 0; i < sources.length; ++i) {
+            var li = document.createElement('li');
+            li.appendChild(createLink(sources[i]));
+            orderedList.appendChild(li);
+        }
+        sourceDiv.appendChild(orderedList);
+    }
+
+    function clearPreviousMsg(){
+    let sourceDiv = document.getElementById("sources");
+    sourceDiv.replaceChildren();
+    var answerElement = document.getElementById("answer");
+    answerElement.innerHTML=""
+    }
+
+
+        function submitQuestion(){
+        clearPreviousMsg();
+        var answerElement = document.getElementById("answer");
+        document.getElementById('progressBar').style.display='';
+        answerElement.innerHTML = "...... Generating Response ........ , Please wait";
+        var question = document.getElementById('question').value;
+        question=question.replace("\n", "");
+        var area = document.getElementById('area').value;
+        console.log('submitted question: '+question);
+         let url ='ask?query='+question+'&area='+area;
+          if(hideSource()) {
+          url += '?hide_source=false';
+          }
+         console.log(url);
+         var request = new XMLHttpRequest();
+         request.onreadystatechange = function() {
+        if(request.readyState === 4) {
+        document.getElementById('progressBar').style.display='none';
+          //bio.style.border = '1px solid #e8e8e8';
+          if(request.status === 200) {
+          console.log(request.responseText)
+          response=JSON.parse(request.responseText)
+          console.log(response)
+          answerElement.innerHTML = response.answer;
+          createSourceList(response.sources);
+          } else {
+          	answerElement.innerHTML = 'An error occurred during your request: ' +  request.status + ' ' + request.statusText;
+          }
+        }
+      }
+      request.open('Get', url);
+      request.send();
+        }
+
+function populateAreaDropDown(){
+       let select=document.getElementById('area')
+       url='api/area';
+       var request = new XMLHttpRequest();
+       request.onreadystatechange = function() {
+        if(request.readyState === 4) {
+
+          if(request.status === 200) {
+          var response=JSON.parse(request.responseText)
+          console.log(response)
+
+          for (var i = 0; i < response.length; i++) {
+                var optn = response[i];
+                var el = document.createElement("option");
+                el.textContent = optn;
+                el.value = optn;
+                select.appendChild(el);
+            }
+          } else {
+          	//answerElement.innerHTML = 'An error occurred during your request: ' +  request.status + ' ' + request.statusText;
+          }
+        }
+      }
+      request.open('Get', url);
+      request.send();
+
+       }
+
+        function hideSource(){
+            const url = new URL(window.location.href);
+            const queryParams = new URLSearchParams(url.search);
+            if(queryParams.get('hide_source') && 'true'==queryParams.get('hide_source')) {
+            return true
+            }
+            return false;
+        }
+    </script>
+</head>
+<body onload="populateAreaDropDown();">
+<div align="center">
+    <img align="center" src="{{url_for('static', filename='company-logo.png')}}" height="200px" align="center" />
+    <h1 align="center">{{appName}}</h1>
+</div>
+<h3 align="center">{{appDescription}}</h3>
+<label for="area">{{chooseAreatext}}</label>
+<select name="area" id="area">
+</select>
+<div class="container">
+    <img src="{{url_for('static', filename='user.png')}}" alt="User" height="45px" width="45px">
+    <textarea placeholder="type your question here" rows="3" cols="150" id="question"></textarea>
+    <img src="{{url_for('static', filename='arrow.jpeg')}}" id="submit" class="right" onclick="javascript : submitQuestion()" />
+</div>
+<div id="progressBar" style="display:none">
+    <img src="{{url_for('static', filename='progressBar.gif')}}"  alt="Generating response, please wait" />
+</div>
+<div class="container darker">
+    <img src="{{url_for('static', filename='company-logo.png')}}"    height="65px" width="85px">
+    <p id="answer" style="padding-left: 85px"></p>
+    <div id="sources"></div>
+</div>
+<div style="background-color: #dbedf7;border: 1px solid mediumvioletred;padding: 7px;">
+    <p>{{text}} </br>
+
+    <ul>
+        <li>{{exampleQuestion1Area}}</li>
+        <li>{{exampleQuestion1}}</li>
+    </ul>
+    <ul>
+        <li>{{exampleQuestion2Area}}</li>
+        <li>{{exampleQuestion2}}</li>
+    </ul>
+    <ul>
+        <li>{{exampleQuestion3Area}}</li>
+        <li>{{exampleQuestion3}}</li>
+    </ul>
+    <ul>
+        <li>{{exampleQuestion4Area}}</li>
+        <li>{{exampleQuestion4}}</li>
+    </ul>
+    </p>
+</div>
+<script>
+    var question = document.getElementById("question");
+
+// Execute a function when the user presses a key on the keyboard
+window.addEventListener("keypress", function(event) {
+console.log(event);
+  // If the user presses the "Enter" key on the keyboard
+  if (event.key === "Enter") {
+  console.log("Inside Enter");
+    submitQuestion();
+  }
+});
+
+</script>
+</body>
+</html>
