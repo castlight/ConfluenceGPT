@@ -6,6 +6,7 @@ To the Organisations/Companies who use Confluence for hosting their product/proc
  - Most importantly, it provides you a project structure with some best practices to get a head start if you plan to use open source(or even paid) LLMs for your specific use cases,
  - The application has been tested in standard company deployment environments and has solved many problems which you would otherwise face when developing such an LLM based application from scratch. These problems and their solutions are mentioned in the article - https://medium.com/p/6ba4505149b2
  - The application downloads all its dependencies one time and later can be run totally in standalone mode i.e. not network call is made during each question/answer.
+ - The application uses only free and open source libraries, embedding models and large language models (refer .env file).
 
 
 ![application.png](application.png)
