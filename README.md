@@ -50,7 +50,7 @@ not have to download these large files(LLMs) OR do the computation(fetching conf
 Application uses your  confluence pages as its knowledge base, by dividing this information between different logical area(e.g. your projects, processes, teams etc). You need to identify these logical area depending on your use case. You should configure each area and identify root confluence pages for each area.
 #### Confluence related configurations - 
    - Set the values for keys 'CONFLUENCE_URL' and 'CONFLUENCE_USERNAME' in the configuration file '.env'. 
-   - Confluence API keys and authentication details - Get your confluence API key from your Confluence admin, and execute the command 'python3 ./src/utils/encryptionHelper.py <confluence_API_key>'. This shall generate the encrypted keys and update the properties 
+   - Confluence API keys and authentication details - Generate your confluence API keys at 'https://id.atlassian.com/manage-profile/security/api-tokens' OR Get your confluence API key from your Confluence admin., and execute the command 'python3 ./src/utils/encryptionHelper.py <confluence_API_key>'. This shall generate the encrypted keys and update the properties 
      'CONFLUENCE_APIKEY_ENCKEY' and 'CONFLUENCE_PASSWORD_OR_APIKEY' in the environment file '.env'.
    - Confluence pages IDs per logical area - Modify the method 'area_to_root_page_id' in the file 'src/config/appconfiguration.py', to list out the different 'area' and respective confluence page IDs.
      This configuration ensures that users would be able to select specific area on the UI, and get more accurate answers since the code will look for the answers within those 
